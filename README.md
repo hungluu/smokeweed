@@ -32,7 +32,7 @@ server.on('connect', function(client){
     // listen for a message
     client.read('title', function(data){});
     // write message to another user with his name
-    client.writeTo('John', 'title', 'data');
+    client.write('title', 'data', 'John');
     // broadcasting
     client.broadcast('title', 'data');
 });
