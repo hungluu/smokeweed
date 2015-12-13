@@ -9,9 +9,19 @@ server.use(function(client){
 });
 
 server.on('open', function(client){
-	console.log(client.name);
+	client.write('init', 'This is an automated message.');
 
-	client.on('close', function(){
-		console.log('Why you leave me??');
+	client.read('hey', function(msg){
+		if(msg === 'hi server'){
+			client.write('hi', 'Okey... I hear you');
+		}
+	});
+
+	client.read('mail', function(msg, to){
+		client.write('mail', msg, to);
+	});
+
+	client.raw().on('message', function(data){
+		console.log('-- ' + data);
 	});
 });

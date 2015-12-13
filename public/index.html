@@ -1,45 +1,40 @@
 <html>
-  <head>
-    <style>
-      body {
-        font-family: "Helvetica Neue", helvetica, arial;
-        padding: 15px;
-      }
+	<head>
+	</head>
+	<body>
+		<script src="smokeweed.js"></script>
+		<script type="text/javascript">
+		var client = smokeweed('192.168.0.254', 5000);
 
-      ul {
-        list-style: none;
-        margin: 0;
-        padding: 0;
-      }
+		client.onopen(function(){
+			console.log('Connected!')
+		});
 
-      ul li {
-        line-height: 1.4;
-      }
-    </style>
+		client.onerror(function(error){
+			console.log(error);
+		});
 
-    <script>
-     var connection = new WebSocket('ws://192.168.0.254:5000');
+		client.onclose(function(){
+			console.log('Disconnected!');
+		});
 
-      connection.onopen = function () {
-        console.log('-connected');
+		client.read('init', function(contents){
+			console.log('-- received message : ' + contents);
 
-        connection.send('{"title":"fuck","contents":"fuck!!"}');
-      }
+			client.write('hey', 'hi server');
+		});
 
-      // Log errors
-      connection.onerror = function (error) {
-        console.error('-error:' + error);
-      }
+		client.read('hi', function(contents){
+			console.log('-- received message : ' + contents);
+		});
 
-      // Log messages from the server
-      connection.onmessage = function (e) {
-        console.log('-message:');
-        console.log(e.data);
-      }
-    </script>
-  </head>
-  <body>
-    <h1>Pings</h1>
-    <ul id='pings'></ul>
-  </body>
+		client.read('init-name', function(name){
+			console.log('-- my name is : ' + name);
+		});
+
+		client.read('mail', function(msg, from){
+			console.log('-- personal message from ' + from + ' : ' + msg);
+		});
+		</script>
+	</body>
 </html>
