@@ -1,0 +1,45 @@
+<html>
+  <head>
+    <style>
+      body {
+        font-family: "Helvetica Neue", helvetica, arial;
+        padding: 15px;
+      }
+
+      ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+
+      ul li {
+        line-height: 1.4;
+      }
+    </style>
+
+    <script>
+     var connection = new WebSocket('ws://192.168.0.254:5000');
+
+      connection.onopen = function () {
+        console.log('-connected');
+
+        connection.send('{"title":"fuck","contents":"fuck!!"}');
+      }
+
+      // Log errors
+      connection.onerror = function (error) {
+        console.error('-error:' + error);
+      }
+
+      // Log messages from the server
+      connection.onmessage = function (e) {
+        console.log('-message:');
+        console.log(e.data);
+      }
+    </script>
+  </head>
+  <body>
+    <h1>Pings</h1>
+    <ul id='pings'></ul>
+  </body>
+</html>
