@@ -6,33 +6,33 @@
 		<script type="text/javascript">
 		var client = smokeweed('192.168.0.254', 5000);
 
-		client.onopen(function(){
+		client.on('open', function(){
 			console.log('Connected!')
 		});
 
-		client.onerror(function(error){
+		client.on('error', function(error){
 			console.log(error);
 		});
 
-		client.onclose(function(){
+		client.on('close', function(){
 			console.log('Disconnected!');
 		});
 
-		client.read('init', function(contents){
+		client.receive('init', function(contents){
 			console.log('-- received message : ' + contents);
 
-			client.write('hey', 'hi server');
+			client.send('hey', 'hi server');
 		});
 
-		client.read('hi', function(contents){
+		client.receive('hi', function(contents){
 			console.log('-- received message : ' + contents);
 		});
 
-		client.read('init-name', function(name){
+		client.receive('--init-name', function(name){
 			console.log('-- my name is : ' + name);
 		});
 
-		client.read('mail', function(msg, from){
+		client.receive('mail', function(msg, from){
 			console.log('-- personal message from ' + from + ' : ' + msg);
 		});
 		</script>

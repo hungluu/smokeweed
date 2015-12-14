@@ -1,27 +1,37 @@
 var smokeweed = require('../index');
 
-var server = smokeweed({
-	client : smokeweed.namedClient
-});
+var server = smokeweed();
 
 server.use(function(client){
 	client.tnet = true
 });
 
 server.on('open', function(client){
-	client.write('init', 'This is an automated message.');
+	client.send('init', 'This is an automated message.');
 
-	client.read('hey', function(msg){
+	client.receive('hey', function(msg){
 		if(msg === 'hi server'){
-			client.write('hi', 'Okey... I hear you');
+			client.send('hi', 'Okey... I hear you');
 		}
 	});
 
-	client.read('mail', function(msg, to){
-		client.write('mail', msg, to);
+	client.receive('mail', function(msg, to){
+		client.send('mail', msg, to);
+	});
+
+	client.on('close', function(){
+		console.log('A client just left');
 	});
 
 	client.raw().on('message', function(data){
 		console.log('-- ' + data);
 	});
+});
+
+server.on('idle', function(){
+	console.log('! Server is in idle mode now');
+});
+
+server.on('wake', function(){
+	console.log('! Server just wakes up');
 });

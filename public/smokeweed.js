@@ -1,6 +1,6 @@
 var smokeweed = (function(host, port){
 	var Client = function(host, port){
-		this.raw = new WebSocket('ws://' + host + ':' + port);
+		this._raw = new WebSocket('ws://' + host + ':' + port);
 		this.mailbox = {};
 
 		function createMessageCallback(client){
@@ -15,37 +15,41 @@ var smokeweed = (function(host, port){
 			}
 		}
 
-		this.raw.onmessage = createMessageCallback(this);
+		this._raw.onmessage = createMessageCallback(this);
 	}
 
 	Client.prototype = {
-		onopen : function(callback){
-			this.raw.onopen = callback;
+		on : function(event, callback){
+			switch(event){
+				case 'open' :
+					this._raw.onopen = callback;
+					break;
+				case 'onerror' :
+					this._raw.onerror = callback;
+					break;
+				case 'onclose' :
+					this._raw.onclose = callback;
+					break;
+			}
 		},
-		onerror: function(callback){
-			this.raw.onerror = callback;
-		},
-		onclose: function(callback){
-			this.raw.onclose = callback;
-		},
-		read : function(title, callback){
+		receive : function(title, callback){
 			if(!(title in this.mailbox)){
 				this.mailbox[title] = [];
 			}
 
 			this.mailbox[title].push(callback);
 		},
-		write : function(title, contents, to){
+		send : function(title, contents, to){
 			to = to || '';
 
-			this.raw.send(JSON.stringify({
+			this._raw.send(JSON.stringify({
 				title : title,
 				contents : contents,
 				to : to
 			}));
 		},
 		raw : function(){
-			return this.raw;
+			return this._raw;
 		}
 	}
 

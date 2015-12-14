@@ -1,6 +1,6 @@
 {
   "name": "smokeweed",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "An implementation of ws for ez life - ez websocketing",
   "main": "index.js",
   "scripts": {
