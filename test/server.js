@@ -1,10 +1,12 @@
 var smokeweed = require('../index');
 
-var server = smokeweed();
-
-server.use(function(client){
-	client.tnet = true
+var server = smokeweed({
+    client : smokeweed.namedClient
 });
+
+// server.use(function(client){
+// 	client.tnet = true
+// });
 
 server.on('open', function(client){
 	client.send('init', 'This is an automated message.');
@@ -15,8 +17,9 @@ server.on('open', function(client){
 		}
 	});
 
-	client.receive('mail', function(msg, to){
-		client.send('mail', msg, to);
+	client.receive('message', function(msg, to){
+        client.send('message', msg, to);
+		client.broadcast('message', msg, to);
 	});
 
 	client.on('close', function(){

@@ -1,40 +1,95 @@
-<html>
-	<head>
-	</head>
-	<body>
-		<script src="smokeweed.js"></script>
-		<script type="text/javascript">
-		var client = smokeweed('192.168.0.254', 5000);
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SMOKEWEED CHAT</title>
 
-		client.on('open', function(){
-			console.log('Connected!')
-		});
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
 
-		client.on('error', function(error){
-			console.log(error);
-		});
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.2/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style>
+    .bubble {
+        color: #bec0c2;
+    }
+    .bubble .panel-heading {
+        background: #3b4454;
+        color: whitesmoke;
+    }
+    .bubble .panel-body {
+        background: #303641
+    }
+    </style>
+  </head>
+  <body>
+      <div class="container-fluid" id="messages" style="background: #303641; position: absolute; top: 0; left: 0; width: 100%; right: 0; bottom: 50px; overflow: hidden; overflow-y: auto; padding: 15px 30px">
+      </div>
+      <div class="container-fluid" style="position: absolute; height: 50px; bottom:0; left: 0; padding: 0">
+          <div class="input-group">
+            <input type="text" class="form-control" style="height: 50px" id="message-input" placeholder="">
+            <span class="input-group-btn">
+                <button type="button" class="btn btn-default" style="height: 50px">
+                   SEND
+                </button>
+            </span>
+          </div>
+      </div>
 
-		client.on('close', function(){
-			console.log('Disconnected!');
-		});
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="smokeweed.js"></script>
+    <script type="text/javascript">
+    var client = smokeweed('192.168.1.11', 5000);
 
-		client.receive('init', function(contents){
-			console.log('-- received message : ' + contents);
+    client.on('open', function(){
+        console.log('Connected!')
+    });
 
-			client.send('hey', 'hi server');
-		});
+    client.on('error', function(error){
+        console.log(error);
+    });
 
-		client.receive('hi', function(contents){
-			console.log('-- received message : ' + contents);
-		});
+    client.on('close', function(){
+        console.log('Disconnected!');
+    });
 
-		client.receive('--init-name', function(name){
-			console.log('-- my name is : ' + name);
-		});
+    // client.receive('init', function(contents){
+    //     console.log('-- received message : ' + contents);
+    //
+    //     client.send('hey', 'hi server');
+    // });
+    //
+    // client.receive('hi', function(contents){
+    //     console.log('-- received message : ' + contents);
+    // });
 
-		client.receive('mail', function(msg, from){
-			console.log('-- personal message from ' + from + ' : ' + msg);
-		});
-		</script>
-	</body>
+    client.receive('--init-name', function(name){
+        console.log('-- my name is : ' + name);
+    });
+
+    // client.receive('mail', function(msg, from){
+    //     console.log('-- personal message from ' + from + ' : ' + msg);
+    // });
+
+    client.receive('message', function(msg, from) {
+        $('#messages').append('<div class="panel panel-default bubble"> <div class="panel-heading"> <span class="panel-title">'+from+'</span> </div> <div class="panel-body"> ' +msg+' </div> </div>');
+    });
+
+    $('button').click(function () {
+        client.send('message', $('#message-input').val());
+        $('#message-input').val('');
+    });
+
+    $('#message-input').keypress(function(e) {
+        if(e.which == 13) {
+            client.send('message', $('#message-input').val());
+            $('#message-input').val('');
+        }
+    });
+    </script>
+  </body>
 </html>
